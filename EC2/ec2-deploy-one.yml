@@ -1,0 +1,53 @@
+---
+- name: launch webservers
+  hosts: local
+  connection: local
+  gather_facts: False
+  vars:
+    region: us-west-2
+    instance_type: t2.micro
+    image_id: ami-1853ac65
+    count: 1
+  tasks:
+    - name: ec2 keypair
+      ec2_key: name=mykey key_material="{{ item }}" region="{{ region }}"
+      with_file: ~/.ssh/id_rsa.pub
+
+    - name: security group
+      ec2_group:
+        name: web
+        description: allow 22,80,443,8080 ports access, allow to internet http acess. 
+        region: "{{ region }}"
+        rules:
+          - proto: tcp
+            ports: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            ports:
+              - 80
+              - 443
+              - 8080
+            cidr_ip: 0.0.0.0/0
+        rules_egress:
+          - proto: tcp
+            ports:
+              - 80
+              - 443
+            cidr_ip: 0.0.0.0/0
+
+    - name: start the instances
+      ec2:
+        region: "{{ region }}"
+        image: "{{ image_id }}"
+        instance_type: "{{ instance_type }}"
+        key_name: mykey
+        group: [web]
+        instance_tags: {type: web,env: production}
+        exact_count: "{{ count }}" 
+        count_tag: { type: web }
+        wait: yes
+      register: ec2
+
+    - name: debug ec2  infromation
+      debug: "msg is {{ ec2 }}"
+
