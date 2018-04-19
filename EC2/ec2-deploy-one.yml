@@ -6,8 +6,14 @@
   vars:
     region: us-west-2
     instance_type: t2.micro
-    image_id: ami-1853ac65
+    image_id: ami-fe5efb9e
     count: 1
+    zone:
+      - us-west-2a
+      - us-west-2b
+    project_name: myblog
+    instance_tags: {type: web,env: production,Name: "{{ project_name }}-web-production"}
+    count_tag: { type: web , env: production}
   tasks:
     - name: ec2 keypair
       ec2_key: name=mykey key_material="{{ item }}" region="{{ region }}"
@@ -16,7 +22,7 @@
     - name: security group
       ec2_group:
         name: web
-        description: allow 22,80,443,8080 ports access, allow to internet http acess. 
+        description: allow 22,80,443,8080 ports access, allow to internet http access. 
         region: "{{ region }}"
         rules:
           - proto: tcp
@@ -38,16 +44,22 @@
     - name: start the instances
       ec2:
         region: "{{ region }}"
+        zone: "{{ item }}"
         image: "{{ image_id }}"
         instance_type: "{{ instance_type }}"
         key_name: mykey
         group: [web]
-        instance_tags: {type: web,env: production}
+        instance_tags: "{{ instance_tags }}"
         exact_count: "{{ count }}" 
-        count_tag: { type: web }
+        count_tag: "{{ count_tag }}"
+        monitoring: yes
         wait: yes
+        wait_timeout: 300
+      with_items: "{{ zone }}"  
       register: ec2
 
-    - name: debug ec2  infromation
-      debug: "msg is {{ ec2 }}"
+    - name: debug ec2 infromation
+      debug: msg="{{ ec2.results.0.tagged_instances }}"
+
+
 
