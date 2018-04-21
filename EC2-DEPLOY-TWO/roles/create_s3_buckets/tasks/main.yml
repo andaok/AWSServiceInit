@@ -1,0 +1,6 @@
+---
+# tasks file for create_s3_buckets
+- name: create s3 bucket
+  s3_bucket:
+    region: "{{ aws_region }}"
+    name: "{{ aws_s3_bucket_name }}"

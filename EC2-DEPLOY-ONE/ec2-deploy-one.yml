@@ -59,7 +59,7 @@
       register: ec2
 
     - name: debug ec2 infromation
-      debug: msg="{{ ec2.results.0.tagged_instances.0.public_dns_name }}"
+      debug: msg="{{ ec2.results.0.tagged_instances.0}}"
 
     - name: add the instances to web group
       add_host: hostname="{{ item.tagged_instances.0.public_dns_name }}" groups=web
