@@ -7,6 +7,6 @@
 - install java,tomcat and so on
 - one host per available zone
 
-> ##### author
+> ##### other
 
 write by itwye , itwye@qq.com
