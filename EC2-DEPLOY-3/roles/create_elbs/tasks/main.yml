@@ -19,7 +19,3 @@
         interval: 30 # seconds
         unhealthy_threshold: 6
         healthy_threshold: 6
-    # access_logs:
-    #     interval: 5 # minutes (defaults to 60)
-    #     s3_location: "{{ aws_project_name }}-lb-log-bucket" # This value is required if access_logs is set
-    #     s3_prefix: "lblogs"

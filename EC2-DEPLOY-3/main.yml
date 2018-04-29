@@ -10,8 +10,7 @@
   roles:
     - create_keypair
     - create_security_groups
-    #- create_s3_buckets
-    #- create_elbs
+    - create_elbs
     - create_instances
         
 - name: aws services deploy stage two
@@ -22,6 +21,6 @@
     - vars.yml
   roles:
     - { role: init_web_instances , when aws_host_role == "web" }
-    #- add_ec2_to_elb
+    - add_ec2_to_elb
 
 

@@ -2,7 +2,9 @@
 # tasks file for add_ec2_to_elb
 - name: add ec2 to elastic load balancer
   ec2_elb:
+    region: "{{ aws_region }}"
     instance_id: "{{ item.tagged_instances.0.id }}"
-    ec2_elbs: "{{ aws_elb_name }}"
+    ec2_elbs: 
+      - "{{ aws_elb_name }}"
     state: present
   with_items: "{{ ec2.results }}"

@@ -1,0 +1,15 @@
+
+# tasks file for init_instances
+- name: create install dir for java
+  file: path="{{ aws_ec2_user_home_dir }}/software" state="directory"
+
+- name: install jdk?
+  shell: "~/software/java/bin/java -version"
+  register: result
+  ignore_errors: true
+
+- name: install jdk
+  script: InstallJDK.sh
+  when: result is failed
+
+
